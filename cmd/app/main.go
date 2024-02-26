@@ -27,7 +27,7 @@ func main() {
 	var cfg config
 	flag.StringVar(&cfg.port, "port", ":8081", "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|production)")
-	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://codev0:pa55word@localhost/lecture6?sslmode=disable", "PostgreSQL DSN")
+	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://adilovamir:password@localhost:5435/adilovamir?sslmode=disable", "PostgreSQL DSN")
 	flag.Parse()
 
 	db, err := openDB(cfg)
@@ -36,6 +36,13 @@ func main() {
 		return
 	}
 	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("Cannot connect to the database: ", err)
+	} else {
+		log.Println("Connected to the database")
+	}
 
 	app := &application{
 		config: cfg,
@@ -55,7 +62,7 @@ func (app *application) run() {
 	v1.HandleFunc("/animes", app.animeCreate).Methods("POST")
 	v1.HandleFunc("/animes/{id}", app.animeRetrieve).Methods("GET")
 	v1.HandleFunc("/animes/{id}", app.animeUpdate).Methods("PUT")
-	v1.HandleFunc("/animes/{id}", app.animeDelete).Methods("DELETE")
+	// v1.HandleFunc("/animes/{id}", app.animeDelete).Methods("DELETE")
 
 	// Users
 	// v1.HandleFunc("/users", app.usersList).Methods("GET")

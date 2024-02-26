@@ -1,0 +1,16 @@
+### Create Menu Item
+POST localhost:8081/api/v1/animes
+Content-Type: application/json
+
+{
+  "title": "Fried Chicken",
+  "description": "Menu 1 description",
+  "nutritionValue": 100
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+

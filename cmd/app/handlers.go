@@ -60,6 +60,33 @@ func (app *application) animeCreate(w http.ResponseWriter, r *http.Request) {
 	app.respondWithJSON(w, http.StatusCreated, anime)
 }
 
+func (app *application) animesList(w http.ResponseWriter, r *http.Request) {
+	animes, err := app.models.Animes.SelectAll()
+	if err != nil {
+		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
+		return
+	}
+	app.respondWithJSON(w, http.StatusOK, animes)
+}
+
+func (app *application) animeRetrieve(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	param := vars["id"]
+
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		app.respondWithError(w, http.StatusBadRequest, "Invalid anime ID")
+		return
+	}
+
+	anime, err := app.models.Animes.Select(id)
+	if err != nil {
+		app.respondWithError(w, http.StatusNotFound, "Anime not found")
+		return
+	}
+	app.respondWithJSON(w, http.StatusOK, anime)
+}
+
 func (app *application) animeUpdate(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	param := vars["id"]
@@ -76,15 +103,48 @@ func (app *application) animeUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var input struct {
-		Title       string  `json:"title"`
-		Episodes    int     `json:"episodes"`
-		Studio      string  `json:"studio"`
-		Description string  `json:"description"`
-		ReleaseYear int     `json:"releaseYear"`
-		Genre       string  `json:"genre"`
-		Rating      float64 `json:"rating"`
+		Title       *string  `json:"title"`
+		Episodes    *int     `json:"episodes"`
+		Studio      *string  `json:"studio"`
+		Description *string  `json:"description"`
+		ReleaseYear *int     `json:"releaseYear"`
+		Genre       *string  `json:"genre"`
+		Rating      *float64 `json:"rating"`
 	}
-	// Need to finish it
+
+	err = app.readJSON(w, r, &input)
+	if err != nil {
+		app.respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	if input.Title != nil {
+		anime.Title = *input.Title
+	}
+	if input.Episodes != nil {
+		anime.Episodes = *input.Episodes
+	}
+	if input.Studio != nil {
+		anime.Studio = *input.Studio
+	}
+	if input.Description != nil {
+		anime.Description = *input.Description
+	}
+	if input.ReleaseYear != nil {
+		anime.ReleaseYear = *input.ReleaseYear
+	}
+	if input.Genre != nil {
+		anime.Genre = *input.Genre
+	}
+	if input.Rating != nil {
+		anime.Rating = *input.Rating
+	}
+	err = app.models.Animes.Update(anime)
+	if err != nil {
+		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
+		return
+	}
+	app.respondWithJSON(w, http.StatusOK, anime)
 }
 
 func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
