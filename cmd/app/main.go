@@ -6,9 +6,13 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"github.com/n31t/go-project/pkg/model"
+
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 type config struct {
@@ -27,7 +31,7 @@ func main() {
 	var cfg config
 	flag.StringVar(&cfg.port, "port", ":8081", "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|production)")
-	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://adilovamir:password@localhost:5435/adilovamir?sslmode=disable", "PostgreSQL DSN")
+	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://postgres:password@localhost:5435/adilovamir?sslmode=disable", "PostgreSQL DSN")
 	flag.Parse()
 
 	db, err := openDB(cfg)
@@ -42,6 +46,33 @@ func main() {
 		log.Fatal("Cannot connect to the database: ", err)
 	} else {
 		log.Println("Connected to the database")
+	}
+
+	// Add your migration code here
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file:///Users/adilovamir/go-project/db/migrations",
+		"postgres", driver)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// err = m.Force(1)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// Down and Up
+	// err = m.Down()
+	// if err != nil && err != migrate.ErrNoChange {
+	// 	log.Fatal(err)
+	// }
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
 	}
 
 	app := &application{

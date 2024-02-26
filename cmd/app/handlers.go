@@ -54,7 +54,8 @@ func (app *application) animeCreate(w http.ResponseWriter, r *http.Request) {
 
 	err = app.models.Animes.Insert(anime)
 	if err != nil {
-		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
+		app.respondWithError(w, http.StatusInternalServerError, "TEST")
+		// app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
 		return
 	}
 	app.respondWithJSON(w, http.StatusCreated, anime)

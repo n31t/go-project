@@ -32,8 +32,7 @@ func (a *AnimeModel) Insert(anime *Anime) error {
 	defer cancel()
 	err := a.DB.QueryRowContext(ctx, query, anime.Title, anime.Episodes,
 		anime.Studio, anime.Description, anime.ReleaseYear,
-		anime.Genre, anime.Rating).Scan(&anime.Id, &anime.Title, &anime.Episodes, &anime.Studio,
-		&anime.Description, &anime.ReleaseYear, &anime.Genre, &anime.Rating)
+		anime.Genre, anime.Rating).Scan(&anime.Id)
 	if err != nil {
 		return err
 	}
