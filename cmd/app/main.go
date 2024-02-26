@@ -48,7 +48,7 @@ func main() {
 		log.Println("Connected to the database")
 	}
 
-	// Add your migration code here
+	// Migrations
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -91,8 +91,8 @@ func (app *application) run() {
 	// Animes
 	v1.HandleFunc("/animes", app.animesList).Methods("GET")
 	v1.HandleFunc("/animes", app.animeCreate).Methods("POST")
-	v1.HandleFunc("/animes/{id}", app.animeRetrieve).Methods("GET")
-	v1.HandleFunc("/animes/{id}", app.animeUpdate).Methods("PUT")
+	v1.HandleFunc("/animes/{id:[0-9]+}", app.animeRetrieve).Methods("GET")
+	v1.HandleFunc("/animes/{id:[0-9]+}", app.animeUpdate).Methods("PUT")
 	// v1.HandleFunc("/animes/{id}", app.animeDelete).Methods("DELETE")
 
 	// Users

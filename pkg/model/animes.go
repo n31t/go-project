@@ -47,7 +47,7 @@ func (a *AnimeModel) Select(id int) (*Anime, error) {
 	var anime Anime
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	err := a.DB.QueryRowContext(ctx, query, anime.Id).Scan(&anime.Id, &anime.Title, &anime.Episodes, &anime.Studio,
+	err := a.DB.QueryRowContext(ctx, query, id).Scan(&anime.Id, &anime.Title, &anime.Episodes, &anime.Studio,
 		&anime.Description, &anime.ReleaseYear, &anime.Genre, &anime.Rating)
 	if err != nil {
 		return nil, err
@@ -88,8 +88,8 @@ func (a *AnimeModel) Update(anime *Anime) error {
 	WHERE id = $8`
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	err := a.DB.QueryRowContext(ctx, query, anime.Title, anime.Episodes,
-		anime.Studio, anime.Description, anime.ReleaseYear, anime.Genre, anime.Rating, anime.Id).Scan()
+	_, err := a.DB.ExecContext(ctx, query, anime.Title, anime.Episodes,
+		anime.Studio, anime.Description, anime.ReleaseYear, anime.Genre, anime.Rating, anime.Id)
 	if err != nil {
 		return err
 	}
