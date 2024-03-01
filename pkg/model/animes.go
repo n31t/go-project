@@ -95,3 +95,17 @@ func (a *AnimeModel) Update(anime *Anime) error {
 	}
 	return nil
 }
+
+func (a *AnimeModel) Delete(id int) error {
+	query := `
+	DELETE 
+	FROM animes
+	WHERE id = $1`
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	_, err := a.DB.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

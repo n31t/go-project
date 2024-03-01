@@ -148,6 +148,22 @@ func (app *application) animeUpdate(w http.ResponseWriter, r *http.Request) {
 	app.respondWithJSON(w, http.StatusOK, anime)
 }
 
+func (app *application) animeDelete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	param := vars["id"]
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		app.respondWithError(w, http.StatusBadRequest, "Invalid anime ID")
+		return
+	}
+	err = app.models.Animes.Delete(id)
+	if err != nil {
+		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
+		return
+	}
+	app.respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
 func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()

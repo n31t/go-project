@@ -49,31 +49,22 @@ func main() {
 	}
 
 	// Migrations
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	m, err := migrate.NewWithDatabaseInstance(
-		"file:///Users/adilovamir/go-project/db/migrations",
-		"postgres", driver)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// migrationDown(db)
+	migrationUp(db)
 
 	// err = m.Force(1)
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
 
-	// Down and Up
 	// err = m.Down()
 	// if err != nil && err != migrate.ErrNoChange {
 	// 	log.Fatal(err)
 	// }
-	err = m.Up()
-	if err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
-	}
+	// err = m.Up()
+	// if err != nil && err != migrate.ErrNoChange {
+	// 	log.Fatal(err)
+	// }
 
 	app := &application{
 		config: cfg,
@@ -93,7 +84,7 @@ func (app *application) run() {
 	v1.HandleFunc("/animes", app.animeCreate).Methods("POST")
 	v1.HandleFunc("/animes/{id:[0-9]+}", app.animeRetrieve).Methods("GET")
 	v1.HandleFunc("/animes/{id:[0-9]+}", app.animeUpdate).Methods("PUT")
-	// v1.HandleFunc("/animes/{id}", app.animeDelete).Methods("DELETE")
+	v1.HandleFunc("/animes/{id}", app.animeDelete).Methods("DELETE")
 
 	// Users
 	// v1.HandleFunc("/users", app.usersList).Methods("GET")
@@ -114,4 +105,38 @@ func openDB(cfg config) (*sql.DB, error) {
 		return nil, err
 	}
 	return db, nil
+}
+
+func migrationUp(db *sql.DB) {
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file:///Users/adilovamir/go-project/db/migrations",
+		"postgres", driver)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
+	}
+}
+
+func migrationDown(db *sql.DB) {
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file:///Users/adilovamir/go-project/db/migrations",
+		"postgres", driver)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = m.Down()
+	if err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
+	}
 }
