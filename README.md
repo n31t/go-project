@@ -4,7 +4,7 @@ This is a simple RESTful API built in Go that allows you to manage an anime data
 
 ## Endpoints
 
-- `POST /anime`: Create a new anime. The request body should include title, episodes, studio, description, releaseYear, genre, and rating.
+- `POST /animes`: Create a new anime. The request body should include title, episodes, studio, description, releaseYear, genre, and rating.
 
 - `GET /animes`: Get a list of all animes.
 
