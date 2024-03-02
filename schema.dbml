@@ -1,6 +1,9 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
 Table animes {
   id bigserial [primary key]
   title varchar
@@ -27,6 +30,13 @@ Table watchedAnimes {
   was_viewed timestamp
 }
 
+Table animesForTierList {
+  id bigserial [primary key]
+  watched_anime bigserial
+  tier int
+}
+
 Ref: users.id > watchedAnimes.user_id
 Ref: animes.id > watchedAnimes.anime_id
+Ref: watchedAnimes.id > animesForTierList.id
 
