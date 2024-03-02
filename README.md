@@ -8,11 +8,11 @@ This is a simple RESTful API built in Go that allows you to manage an anime data
 
 - `GET /animes`: Get a list of all animes.
 
-- `GET /anime/{id}`: Get the details of a specific anime by its ID.
+- `GET /animes/{id}`: Get the details of a specific anime by its ID.
 
-- `PUT /anime/{id}`: Update the details of a specific anime by its ID. The request body can include title, episodes, studio, description, releaseYear, genre, and rating.
+- `PUT /animes/{id}`: Update the details of a specific anime by its ID. The request body can include title, episodes, studio, description, releaseYear, genre, and rating.
 
-- `DELETE /anime/{id}`: Delete a specific anime by its ID.
+- `DELETE /animes/{id}`: Delete a specific anime by its ID.
 
 ## Error Handling
 
