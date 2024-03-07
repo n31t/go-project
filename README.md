@@ -20,7 +20,7 @@ The API responds with appropriate HTTP status codes and error messages in the ca
 
 ## Usage
 
-To start the server, run `go run main.go`. The server will start on port 8081. You can then use a tool like curl or Postman to send requests to the API.
+To start the server, run `go run *`. The server will start on port 8081. You can then use a tool like curl or Postman to send requests to the API.
 
 ## Future Improvements
 
