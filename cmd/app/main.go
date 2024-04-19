@@ -4,11 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"log"
-	"net/http"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
-	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"github.com/n31t/go-project/pkg/model"
 
@@ -75,68 +71,10 @@ func main() {
 
 }
 
-func (app *application) run() {
-	r := mux.NewRouter()
-	v1 := r.PathPrefix("/api/v1").Subrouter()
-
-	// Animes
-	v1.HandleFunc("/animes", app.animesList).Methods("GET")
-	v1.HandleFunc("/animes", app.animeCreate).Methods("POST")
-	v1.HandleFunc("/animes/{id:[0-9]+}", app.animeRetrieve).Methods("GET")
-	v1.HandleFunc("/animes/{id:[0-9]+}", app.animeUpdate).Methods("PUT")
-	v1.HandleFunc("/animes/{id}", app.animeDelete).Methods("DELETE")
-
-	// Users
-	// v1.HandleFunc("/users", app.usersList).Methods("GET")
-	// v1.HandleFunc("/users/{id}", app.userRetrieve).Methods("GET")
-	// v1.HandleFunc("/users/{id}", app.userCreate).Methods("POST")
-	// v1.HandleFunc("/users/{id}", app.userUpdate).Methods("PUT")
-	// v1.HandleFunc("/users/{id}", app.userDelete).Methods("DELETE")
-
-	log.Printf("Starting server on %s\n", app.config.port)
-	err := http.ListenAndServe(app.config.port, r)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
 func openDB(cfg config) (*sql.DB, error) {
 	db, err := sql.Open("postgres", cfg.db.dsn)
 	if err != nil {
 		return nil, err
 	}
 	return db, nil
-}
-
-func migrationUp(db *sql.DB) {
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	m, err := migrate.NewWithDatabaseInstance(
-		"file:///Users/adilovamir/go-project/db/migrations",
-		"postgres", driver)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = m.Up()
-	if err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
-	}
-}
-
-func migrationDown(db *sql.DB) {
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	m, err := migrate.NewWithDatabaseInstance(
-		"file:///Users/adilovamir/go-project/db/migrations",
-		"postgres", driver)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = m.Down()
-	if err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
-	}
 }

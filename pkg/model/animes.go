@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 )
@@ -55,30 +56,68 @@ func (a *AnimeModel) Select(id int) (*Anime, error) {
 	return &anime, nil
 }
 
-func (a *AnimeModel) SelectAll() ([]*Anime, error) {
-	query := `
-	SELECT * FROM animes`
+// func (a *AnimeModel) SelectAll() ([]*Anime, error) {
+// 	query := `
+// 	SELECT * FROM animes`
+// 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+// 	defer cancel()
+// 	rows, err := a.DB.QueryContext(ctx, query)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
+// 	var animes []*Anime
+// 	for rows.Next() {
+// 		var anime Anime
+// 		err := rows.Scan(&anime.Id, &anime.Title, &anime.Episodes, &anime.Studio,
+// 			&anime.Description, &anime.ReleaseYear, &anime.Genre, &anime.Rating)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		animes = append(animes, &anime)
+// 	}
+// 	if err = rows.Err(); err != nil {
+// 		return nil, err
+// 	}
+// 	return animes, nil
+// }
+
+func (a *AnimeModel) SelectAll(title string, genre string, filter Filters) ([]*Anime, Metadata, error) {
+	query := fmt.Sprintf(`
+	SELECT count(*) OVER(), id, title, episodes, studio, description, releaseYear, genre, rating
+	FROM animes
+	WHERE (STRPOS(LOWER(title), LOWER($1))> 0 or $1 = '')
+	AND (STRPOS(LOWER(genre), LOWER($2))> 0 or $2 = '')
+	ORDER BY %s %s, id ASC
+	LIMIT $3 OFFSET $4
+	`, filter.sortColumn(), filter.sortDirection())
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	rows, err := a.DB.QueryContext(ctx, query)
+
+	args := []interface{}{title, genre, filter.limit(), filter.offset()}
+	rows, err := a.DB.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, err
+		return nil, Metadata{}, err
 	}
 	defer rows.Close()
 	var animes []*Anime
+	totalRecords := 0
 	for rows.Next() {
 		var anime Anime
-		err := rows.Scan(&anime.Id, &anime.Title, &anime.Episodes, &anime.Studio,
+		err := rows.Scan(&totalRecords, &anime.Id, &anime.Title, &anime.Episodes, &anime.Studio,
 			&anime.Description, &anime.ReleaseYear, &anime.Genre, &anime.Rating)
 		if err != nil {
-			return nil, err
+			return nil, Metadata{}, err
 		}
 		animes = append(animes, &anime)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, Metadata{}, err
+
 	}
-	return animes, nil
+	metadata := calculateMetadata(totalRecords, filter.Page, filter.PageSize)
+
+	return animes, metadata, nil
 }
 
 func (a *AnimeModel) Update(anime *Anime) error {
