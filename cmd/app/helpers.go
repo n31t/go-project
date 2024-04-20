@@ -27,6 +27,26 @@ func (app *application) respondWithJSON(w http.ResponseWriter, code int, payload
 	w.Write(response)
 }
 
+func (app *application) respondWithJSONMetadata(w http.ResponseWriter, code int, data interface{}, metadata interface{}) {
+	response := struct {
+		Data     interface{} `json:"data"`
+		Metadata interface{} `json:"metadata,omitempty"`
+	}{
+		Data:     data,
+		Metadata: metadata,
+	}
+
+	js, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(js)
+}
+
 func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()

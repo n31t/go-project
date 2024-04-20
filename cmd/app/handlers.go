@@ -10,36 +10,6 @@ import (
 	"github.com/n31t/go-project/pkg/validator"
 )
 
-// func (app *application) respondWithError(w http.ResponseWriter, code int, message string) {
-// 	app.respondWithJSON(w, code, map[string]string{"error": message})
-// }
-
-// func (app *application) respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-// 	response, err := json.Marshal(payload)
-
-// 	if err != nil {
-// 		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
-// 		return
-// 	}
-
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(code)
-// 	w.Write(response)
-// }
-
-// func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
-// 	dec := json.NewDecoder(r.Body)
-// 	dec.DisallowUnknownFields()
-
-// 	err := dec.Decode(dst)
-// 	if err != nil {
-// 		app.respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
 // Anime handlers
 func (app *application) animeCreate(w http.ResponseWriter, r *http.Request) {
 	var input struct {
@@ -114,7 +84,8 @@ func (app *application) animesList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(metadata)
-	app.respondWithJSON(w, http.StatusOK, animes)
+	app.respondWithJSONMetadata(w, http.StatusOK, animes, metadata)
+
 }
 
 func (app *application) animeRetrieve(w http.ResponseWriter, r *http.Request) {
@@ -212,28 +183,28 @@ func (app *application) animeDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 // User handlers
-func (app *application) userCreate(w http.ResponseWriter, r *http.Request) {
-	var input struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-		Email    string `json:"email"`
-	}
+// func (app *application) userCreate(w http.ResponseWriter, r *http.Request) {
+// 	var input struct {
+// 		Username string `json:"username"`
+// 		Password string `json:"password"`
+// 		Email    string `json:"email"`
+// 	}
 
-	err := app.readJSON(w, r, &input)
-	if err != nil {
-		app.respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	user := &model.User{
-		Username: input.Username,
-		Password: input.Password,
-		Email:    input.Email,
-	}
+// 	err := app.readJSON(w, r, &input)
+// 	if err != nil {
+// 		app.respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+// 		return
+// 	}
+// 	user := &model.User{
+// 		Username: input.Username,
+// 		Password: input.Password,
+// 		Email:    input.Email,
+// 	}
 
-	err = app.models.Users.Insert(user)
-	if err != nil {
-		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
-		return
-	}
-	app.respondWithJSON(w, http.StatusCreated, user)
-}
+// 	err = app.models.Users.Insert(user)
+// 	if err != nil {
+// 		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
+// 		return
+// 	}
+// 	app.respondWithJSON(w, http.StatusCreated, user)
+// }
