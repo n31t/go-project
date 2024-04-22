@@ -71,7 +71,7 @@ func (app *application) animesList(w http.ResponseWriter, r *http.Request) {
 	input.Filters.PageSize = app.readInt(qs, "page_size", 10, v)
 
 	input.Filters.Sort = app.readString(qs, "sort", "id")
-	input.Filters.SortSafeList = []string{"id", "title", "episodes", "studio", "releaseYear", "genre", "rating"}
+	input.Filters.SortSafeList = []string{"id", "title", "episodes", "studio", "releaseYear", "genre", "rating", "-id", "-title", "-episodes", "-studio", "-releaseYear", "-genre", "-rating"}
 
 	if model.ValidateFilters(v, input.Filters); !v.Valid() {
 		app.respondWithError(w, http.StatusBadRequest, fmt.Sprintf("%v", v.Errors))
@@ -83,7 +83,6 @@ func (app *application) animesList(w http.ResponseWriter, r *http.Request) {
 		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
 		return
 	}
-	fmt.Println(metadata)
 	app.respondWithJSONMetadata(w, http.StatusOK, animes, metadata)
 
 }
