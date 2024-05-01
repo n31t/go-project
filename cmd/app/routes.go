@@ -24,11 +24,8 @@ func (app *application) run() {
 	v1.HandleFunc("/healthcheck", app.healthCheck).Methods("GET")
 
 	// Users
-	// v1.HandleFunc("/users", app.usersList).Methods("GET")
-	// v1.HandleFunc("/users/{id}", app.userRetrieve).Methods("GET")
-	// v1.HandleFunc("/users/{id}", app.userCreate).Methods("POST")
-	// v1.HandleFunc("/users/{id}", app.userUpdate).Methods("PUT")
-	// v1.HandleFunc("/users/{id}", app.userDelete).Methods("DELETE")
+	v1.HandleFunc("/users", app.registerUserHandler).Methods("POST")
+	v1.HandleFunc("/users/activated", app.activateUserHandler).Methods("PUT")
 
 	log.Printf("Starting server on %s\n", app.config.port)
 	err := http.ListenAndServe(app.config.port, r)

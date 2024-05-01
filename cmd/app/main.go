@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/n31t/go-project/pkg/model"
+	"github.com/n31t/go-project/pkg/model/filler"
 
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
@@ -14,6 +15,7 @@ import (
 type config struct {
 	port string
 	env  string
+	fill bool
 	db   struct {
 		dsn string
 	}
@@ -27,6 +29,7 @@ func main() {
 	var cfg config
 	flag.StringVar(&cfg.port, "port", ":8081", "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|production)")
+	flag.BoolVar(&cfg.fill, "fill", false, "Fill the database with initial data")
 	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://postgres:password@localhost:5435/adilovamir?sslmode=disable", "PostgreSQL DSN")
 	flag.Parse()
 
@@ -45,26 +48,19 @@ func main() {
 	}
 
 	// Migrations
-	// migrationDown(db)
+	migrationDown(db)
 	migrationUp(db)
-
-	// err = m.Force(1)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// err = m.Down()
-	// if err != nil && err != migrate.ErrNoChange {
-	// 	log.Fatal(err)
-	// }
-	// err = m.Up()
-	// if err != nil && err != migrate.ErrNoChange {
-	// 	log.Fatal(err)
-	// }
 
 	app := &application{
 		config: cfg,
 		models: model.NewModels(db),
+	}
+
+	if cfg.fill {
+		err := filler.FillDatabase(app.models)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	app.run()
