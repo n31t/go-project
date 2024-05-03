@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -13,7 +14,7 @@ import (
 )
 
 type config struct {
-	port string
+	port int
 	env  string
 	fill bool
 	db   struct {
@@ -26,17 +27,20 @@ type application struct {
 }
 
 func main() {
+
 	var cfg config
-	flag.StringVar(&cfg.port, "port", ":8081", "API server port")
+	// flag.StringVar(&cfg.port, "port", ":8081", "API server port")
+	flag.IntVar(&cfg.port, "port", 8081, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|production)")
 	flag.BoolVar(&cfg.fill, "fill", false, "Fill the database with initial data")
-	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://postgres:password@localhost:5435/adilovamir?sslmode=disable", "PostgreSQL DSN")
+	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://postgres:password@postgres:5435/adilovamir?sslmode=disable", "PostgreSQL DSN")
 	flag.Parse()
 
 	db, err := openDB(cfg)
 	if err != nil {
 		log.Fatal(err)
 		return
+
 	}
 	defer db.Close()
 
@@ -63,7 +67,10 @@ func main() {
 		}
 	}
 
-	app.run()
+	// app.run()
+	if err := app.serve(); err != nil {
+		fmt.Sprintf("error starting server: %v\n", err)
+	}
 
 }
 

@@ -56,6 +56,12 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		}
 		return
 	}
+	// TODO: Add permissions for the user for future models
+	// err = app.models.Permissions.AddForUser(user.Id, "movies:read")
+	// if err != nil {
+	// 	app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
+	// 	return
+	// }
 
 	token, err := app.models.Tokens.New(user.Id, 3*24*time.Hour, model.ScopeActivation)
 	if err != nil {

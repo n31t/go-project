@@ -180,30 +180,3 @@ func (app *application) animeDelete(w http.ResponseWriter, r *http.Request) {
 	}
 	app.respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
-
-// User handlers
-// func (app *application) userCreate(w http.ResponseWriter, r *http.Request) {
-// 	var input struct {
-// 		Username string `json:"username"`
-// 		Password string `json:"password"`
-// 		Email    string `json:"email"`
-// 	}
-
-// 	err := app.readJSON(w, r, &input)
-// 	if err != nil {
-// 		app.respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-// 		return
-// 	}
-// 	user := &model.User{
-// 		Username: input.Username,
-// 		Password: input.Password,
-// 		Email:    input.Email,
-// 	}
-
-// 	err = app.models.Users.Insert(user)
-// 	if err != nil {
-// 		app.respondWithError(w, http.StatusInternalServerError, "500 Internal Server Error")
-// 		return
-// 	}
-// 	app.respondWithJSON(w, http.StatusCreated, user)
-// }
