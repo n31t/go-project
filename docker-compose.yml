@@ -1,41 +1,3 @@
-# version: '3.8'
-
-# services:
-#   app:
-#     container_name: main_app
-#     build: .
-#     env_file:
-#       - .env
-#     ports:
-#       - "8081:8081"
-#     volumes:
-#       - .:/usr/src/app
-#     depends_on:
-#       - postgres
-#     networks:
-#       - fullstack
-
-#   postgres:
-#     image: postgres:latest
-#     container_name: db_postgres
-#     environment:
-#       - POSTGRES_USER=${user}
-#       - POSTGRES_PASSWORD=${password}
-#       - POSTGRES_DB=${dbname}
-#       - DATABASE_HOST=${host}
-#     ports:
-#       - "5435:5432"
-#     volumes:
-#       - database_postgres:/var/lib/postgresql/data
-#     networks:
-#       - fullstack
-
-# volumes:
-#   database_postgres:
-
-# networks:
-#   fullstack:
-#     driver: bridge
 
 version: '3.8'
 
@@ -58,12 +20,12 @@ services:
     image: postgres:latest
     container_name: db_postgres
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=adilovamir
-      - DATABASE_HOST=db_postgres
+      - POSTGRES_USER=${user}
+      - POSTGRES_PASSWORD=${password}
+      - POSTGRES_DB=${dbname}
+      - DATABASE_HOST=${host}
     ports:
-      - "5435:5432"
+      - "5433:5432"
     volumes:
       - database_postgres:/var/lib/postgresql/data
     networks:

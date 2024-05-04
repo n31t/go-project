@@ -17,7 +17,8 @@ func migrationUp(db *sql.DB) {
 		log.Fatal(err)
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file:///Users/adilovamir/go-project/db/migrations",
+		// "file:///Users/adilovamir/go-project/db/migrations",
+		"file://db/migrations", // changed path
 		"postgres", driver)
 	if err != nil {
 		log.Fatal(err)
@@ -34,7 +35,8 @@ func migrationDown(db *sql.DB) {
 		log.Fatal(err)
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file:///Users/adilovamir/go-project/db/migrations",
+		// "file:///Users/adilovamir/go-project/db/migrations",
+		"file://db/migrations", // changed path
 		"postgres", driver)
 	if err != nil {
 		log.Fatal(err)

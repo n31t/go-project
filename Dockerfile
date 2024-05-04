@@ -5,6 +5,6 @@ RUN go mod download
 
 EXPOSE 8081
 
-CMD ["go", "run", "/usr/src/app/cmd/app", "."]
+CMD ["go", "run", "/usr/src/app/cmd/app", "-fill=true"]
 
 
