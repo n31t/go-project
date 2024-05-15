@@ -103,3 +103,13 @@ func (app *application) requirePermission(code string, next http.HandlerFunc) ht
 	return app.requireActivatedUser(fn)
 
 }
+
+func (app *application) getBearerToken(r *http.Request) (string, error) {
+	authorizationHeader := r.Header.Get("Authorization")
+	headerParts := strings.Split(authorizationHeader, " ")
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
+		return "", errors.New("Invalid or missing Bearer token")
+	}
+
+	return headerParts[1], nil
+}

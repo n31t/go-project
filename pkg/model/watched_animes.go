@@ -9,9 +9,9 @@ import (
 )
 
 type WatchedAnime struct {
-	Id        string    `json:"id"`
-	AnimeId   string    `json:"animeId"`
-	UserId    string    `json:"userId"`
+	Id        int       `json:"id"`
+	AnimeId   int       `json:"animeId"`
+	UserId    int       `json:"userId"`
 	WasViewed time.Time `json:"wasViewed"`
 	Tier      string    `json:"tier"`
 }
@@ -145,4 +145,21 @@ func (w *WatchedAnimeModel) SelectAllWithTier(tier string, userId int) ([]*Watch
 		return nil, err
 	}
 	return watchedAnimes, nil
+}
+
+func (w *WatchedAnimeModel) IsWatched(animeId int, userId int) (bool, error) {
+	query := `
+    SELECT EXISTS(
+        SELECT 1 
+        FROM watched_animes 
+        WHERE anime_id = $1 AND user_id = $2
+    )`
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var exists bool
+	err := w.DB.QueryRowContext(ctx, query, animeId, userId).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
 }

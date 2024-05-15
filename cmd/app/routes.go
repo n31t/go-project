@@ -48,7 +48,7 @@ func (app *application) routes() http.Handler {
 	v1.HandleFunc("/animes/{id}", app.requirePermission("animes:delete", app.animeDelete)).Methods("DELETE")
 
 	// Watched Animes
-	// v1.HandleFunc("/watched-animes", app.watchedAnimesList).Methods("GET")
+	v1.HandleFunc("/watched-animes", app.requireActivatedUser(app.watchedAnimeCreate)).Methods("POST")
 	// Healthcheck
 	v1.HandleFunc("/healthcheck", app.healthCheck).Methods("GET")
 
