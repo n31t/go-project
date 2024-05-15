@@ -28,15 +28,11 @@ Table watchedAnimes {
   user_id bigserial
   anime_id bigserial
   was_viewed timestamp
+  tier string
 }
 
-Table animesForTierList {
-  id bigserial [primary key]
-  watched_anime bigserial
-  tier int
-}
 
 Ref: users.id > watchedAnimes.user_id
 Ref: animes.id > watchedAnimes.anime_id
-Ref: watchedAnimes.id > animesForTierList.id
+
 

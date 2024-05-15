@@ -14,19 +14,21 @@ var (
 )
 
 type Models struct {
-	Animes      AnimeModel
-	Permissions PermissionModel
-	Tokens      TokenModel
-	Users       UserModel
+	Animes        AnimeModel
+	Permissions   PermissionModel
+	Tokens        TokenModel
+	Users         UserModel
+	WatchedAnimes WatchedAnimeModel
 }
 
 func NewModels(db *sql.DB) Models {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	return Models{
-		Animes:      AnimeModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
-		Permissions: PermissionModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
-		Tokens:      TokenModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
-		Users:       UserModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
+		Animes:        AnimeModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
+		Permissions:   PermissionModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
+		Tokens:        TokenModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
+		Users:         UserModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
+		WatchedAnimes: WatchedAnimeModel{DB: db, InfoLog: infoLog, ErrorLog: errorLog},
 	}
 }

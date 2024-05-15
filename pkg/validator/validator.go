@@ -64,3 +64,13 @@ func Unique(values []string) bool {
 
 	return len(values) == len(uniqueValues)
 }
+
+// Tier returns true if a specific value is in a list of strings.
+func Tier(value string, list ...string) bool {
+	for i := range list {
+		if value == list[i] {
+			return true
+		}
+	}
+	return false
+}
