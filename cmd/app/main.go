@@ -15,11 +15,10 @@ import (
 )
 
 type config struct {
-	port         int
-	env          string
-	fill         bool
-	migrateDowln bool
-	db           struct {
+	port int
+	env  string
+	fill bool
+	db   struct {
 		dsn string
 	}
 }
@@ -34,7 +33,6 @@ func main() {
 	flag.IntVar(&cfg.port, "port", 8081, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|production)")
 	flag.BoolVar(&cfg.fill, "fill", false, "Fill the database with initial data")
-	flag.BoolVar(&cfg.migrateDowln, "migrate-down", false, "Migrate down")
 	// flag.StringVar(&cfg.db.dsn, "dsn", "postgres://postgres:password@postgres:5432/adilovamir?sslmode=disable", "PostgreSQL DSN")
 	dsn := os.Getenv("DSN")
 	if dsn == "" {
@@ -60,9 +58,6 @@ func main() {
 
 	// Migrations
 	// migrationDown(db)
-	if cfg.migrateDowln {
-		migrationDown(db)
-	}
 	migrationUp(db)
 
 	app := &application{

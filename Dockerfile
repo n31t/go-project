@@ -6,6 +6,6 @@ RUN go mod download
 EXPOSE 8081
 
 # CMD ["go", "run", "/usr/src/app/cmd/app", "-fill=true"]
-CMD go run /usr/src/app/cmd/app $FILL_FLAG $MIGRATE_FLAG
+CMD go run /usr/src/app/cmd/app $FILL_FLAG
 
 
