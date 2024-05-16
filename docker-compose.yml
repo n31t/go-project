@@ -17,6 +17,7 @@ services:
       - fullstack
     environment:
       - FILL_FLAG
+      - MIGRATE_FLAG
 
   postgres:
     image: postgres:latest
