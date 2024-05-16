@@ -39,7 +39,7 @@ func (w *WatchedAnimeModel) Select(id int, userId int) (*WatchedAnime, error) {
 	query := `
     SELECT id, anime_id, user_id, was_viewed, tier
     FROM watched_animes
-    WHERE id = $1 AND user_id = $2`
+    WHERE anime_id = $1 AND user_id = $2`
 	var watchedAnime WatchedAnime
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -54,7 +54,7 @@ func (w *WatchedAnimeModel) Update(watchedAnime *WatchedAnime, userId int) error
 	query := `UPDATE watched_animes SET was_viewed = $1, tier = $2 WHERE id = $3 AND user_id = $4`
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	_, err := w.DB.ExecContext(ctx, query, watchedAnime.WasViewed, watchedAnime.Tier, userId, watchedAnime.UserId)
+	_, err := w.DB.ExecContext(ctx, query, watchedAnime.WasViewed, watchedAnime.Tier, watchedAnime.Id, userId)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (w *WatchedAnimeModel) Update(watchedAnime *WatchedAnime, userId int) error
 }
 
 func (w *WatchedAnimeModel) Delete(id int, userId int) error {
-	query := `DELETE FROM watched_animes WHERE id = $1 AND user_id = $2`
+	query := `DELETE FROM watched_animes WHERE anime_id = $1 AND user_id = $2`
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	_, err := w.DB.ExecContext(ctx, query, id, userId)
@@ -109,16 +109,16 @@ func (w *WatchedAnimeModel) SelectAll(userId int, genre string, filter Filters) 
 	return watchedAnimes, metadata, nil
 }
 
-func (w *WatchedAnimeModel) AddTier(tier string, watchedAnime *WatchedAnime, userId int) error {
-	query := `UPDATE watched_animes SET tier = $1 WHERE id = $2 AND user_id = $3`
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	_, err := w.DB.ExecContext(ctx, query, tier, watchedAnime.Id, watchedAnime.UserId)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func (w *WatchedAnimeModel) AddTier(tier string, watchedAnime *WatchedAnime, userId int) error {
+// 	query := `UPDATE watched_animes SET tier = $1 WHERE id = $2 AND user_id = $3`
+// 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+// 	defer cancel()
+// 	_, err := w.DB.ExecContext(ctx, query, tier, watchedAnime.Id, watchedAnime.UserId)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (w *WatchedAnimeModel) SelectAllWithTier(tier string, userId int) ([]*WatchedAnime, error) {
 	query := `

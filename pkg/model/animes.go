@@ -136,13 +136,22 @@ func (a *AnimeModel) Update(anime *Anime) error {
 }
 
 func (a *AnimeModel) Delete(id int) error {
-	query := `
-	DELETE 
-	FROM animes
-	WHERE id = $1`
+	watchedAnimesQuery := `
+    DELETE 
+    FROM watched_animes
+    WHERE anime_id = $1`
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	_, err := a.DB.ExecContext(ctx, query, id)
+	_, err := a.DB.ExecContext(ctx, watchedAnimesQuery, id)
+	if err != nil {
+		return err
+	}
+
+	animesQuery := `
+    DELETE 
+    FROM animes
+    WHERE id = $1`
+	_, err = a.DB.ExecContext(ctx, animesQuery, id)
 	if err != nil {
 		return err
 	}

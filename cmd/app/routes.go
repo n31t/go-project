@@ -49,6 +49,11 @@ func (app *application) routes() http.Handler {
 
 	// Watched Animes
 	v1.HandleFunc("/watched-animes", app.requireActivatedUser(app.watchedAnimeCreate)).Methods("POST")
+	v1.HandleFunc("/watched-animes/{id:[0-9]+}", app.requireActivatedUser(app.watchedAnimeRetrieve)).Methods("GET")
+	v1.HandleFunc("/watched-animes", app.requireActivatedUser(app.watchedAnimeList)).Methods("GET")
+	v1.HandleFunc("/watched-animes/tier/{tier}", app.requireActivatedUser(app.watchedAnimeListByTier)).Methods("GET")
+	v1.HandleFunc("/watched-animes/{id:[0-9]+}", app.requireActivatedUser(app.watchedAnimeUpdate)).Methods("PUT")
+	v1.HandleFunc("/watched-animes/{id:[0-9]+}", app.requireActivatedUser(app.watchedAnimeDelete)).Methods("DELETE")
 	// Healthcheck
 	v1.HandleFunc("/healthcheck", app.healthCheck).Methods("GET")
 

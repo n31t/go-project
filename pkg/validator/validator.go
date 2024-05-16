@@ -7,6 +7,7 @@ import (
 var (
 	// EmailRegex is a regular expression to validate email addresses
 	EmailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	Tiers      = []string{"S", "A", "B", "C", "D", "E", "F"}
 )
 
 // Validator struct type contains a map of validation errors.
