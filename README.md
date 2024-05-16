@@ -39,7 +39,7 @@ To start the server, run `go run *`. The server will start on port 8081. You can
 
 ## Deployment
 
-This project is currently deployed on [https://neit-project-ple6u.ondigitalocean.app/api/v1/healthcheck](DigitalOcean). You can access the API using the provided endpoint.
+This project is currently deployed on [https://neit-goapp-l6dtc.ondigitalocean.app/api/v1/healthcheck](DigitalOcean). You can access the API using the provided endpoint.
 
 ## Environment Variables
 
