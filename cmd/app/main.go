@@ -57,7 +57,7 @@ func main() {
 	}
 
 	// Migrations
-	// migrationDown(db)
+	migrationDown(db)
 	migrationUp(db)
 
 	app := &application{
